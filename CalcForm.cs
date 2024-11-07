@@ -11,14 +11,16 @@ using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
+using LesGraphingCalc.CalculeteModel;
+using LesGraphingCalc.Controllers;
 
 namespace LesGraphingCalc
 {
     public partial class CalcForm : Form
     {
         BackgroundWorker _bw = new BackgroundWorker();
-        OutputState _outState;    // current data, ranges, and bitmap used by GUI thread
-        DirectBitmap _prevBitmap; // bitmap used in most recent frame (often same as current)
+        OutputState _outState;    
+        DirectBitmap _prevBitmap;
 
         public CalcForm()
         {
@@ -55,7 +57,6 @@ namespace LesGraphingCalc
 
         private void CalcForm_Load(object sender, EventArgs e)
         {
-            // Load settings
             SetUpComboBox(cbFormulas, "Formulas", "sin(x) + x**2/10 - 1   // Winding road\n" 
                                                 + "sqrt(x**2+y**2) - cos(atan(y,x) * 5); // Flower\n"
                                                 + "@navy x^2+y^2<=4^2;  @goldenrod y < 7-x^2 && y>(x<1.3 ? -((x-1.3)^2)/4 : - ((x-1.3)^2)); @black sqrt(x**2+(y-3)**2)*1.5 - cos(atan(y-3,x)*5-1.4)/2<1; // Starfleet\n"

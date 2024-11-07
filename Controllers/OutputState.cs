@@ -8,16 +8,19 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Linq;
 using System.Reflection;
+using LesGraphingCalc.CalculeteModel;
+using LesGraphingCalc.Controllers;
 using System.Runtime.InteropServices;
 
 namespace LesGraphingCalc
 {
+
     class OutputState
     {
         public List<CalculatorCore> Calcs;
         public GraphRange XRange, YRange, ZRange;
         public DirectBitmap Bitmap;
-        
+
         public OutputState(List<CalculatorCore> calcs, GraphRange xRange, GraphRange yRange, GraphRange zRange, DirectBitmap bitmap)
         {
             Calcs = calcs;
@@ -29,17 +32,20 @@ namespace LesGraphingCalc
 
         internal void RenderAll()
         {
-            using (var g = Graphics.FromImage(Bitmap.Bitmap)) {
+            using (var g = Graphics.FromImage(Bitmap.Bitmap))
+            {
                 g.Clear(Color.White);
 
-                if (YRange.AutoRange && Calcs.All(c => c.Results is double[])) {
+                if (YRange.AutoRange && Calcs.All(c => c.Results is double[]))
+                {
                     YRange.Lo = -0.5;
                     YRange.Hi = 1;
                     Calcs.ForEach(c => FindMinMax((double[])c.Results, ref YRange.Lo, ref YRange.Hi));
                 }
 
                 var heatMap = Calcs.FirstOrDefault(c => (c as Calculator3D)?.EquationMode == false);
-                if (heatMap != null) {
+                if (heatMap != null)
+                {
                     MaybeChooseAutoZRange(ZRange, (double[,])heatMap.Results);
                     RenderXYFunc((double[,])heatMap.Results, false, Color.Transparent);
                 }
@@ -55,14 +61,17 @@ namespace LesGraphingCalc
         void RenderSeries(CalculatorCore calc, int seriesIndex, Graphics g)
         {
             sbyte[,] bins = null;
-            using (Pen pen = MakePen(calc.Expr, seriesIndex)) {
+            using (Pen pen = MakePen(calc.Expr, seriesIndex))
+            {
                 if (calc.Results is double[])
                     RenderXFunc(g, (double[])calc.Results, pen);
-                else {
+                else
+                {
                     double[,] data = (double[,])calc.Results;
                     if (((Calculator3D)calc).EquationMode)
                         RenderXYFunc(data, true, pen.Color);
-                    else {
+                    else
+                    {
                         bins = bins ?? new sbyte[data.GetLength(0), data.GetLength(1)];
                         double lo, interval = ChooseGridSpacing(out lo, ZRange, data);
                         RenderContourLines(data, bins, pen.Color, lo, interval);
@@ -76,28 +85,29 @@ namespace LesGraphingCalc
 
         private SizeF DrawText(Graphics g, string text, float x, float y, Color color, StringAlignment hAlign, StringAlignment vAlign)
         {
-            using (Brush brush = new SolidBrush(color)) {
+            using (Brush brush = new SolidBrush(color))
+            {
                 SizeF size = g.MeasureString(text, Font);
                 x = Align(x, size.Width, hAlign);
                 y = Align(y, size.Height, vAlign);
                 using (var rectbrush = new SolidBrush(Color.FromArgb(128, Color.White)))
                     g.FillRectangle(rectbrush, x, y, size.Width, size.Height);
-                g.DrawString(text, Font, Brushes.White, x-1, y);
-                g.DrawString(text, Font, Brushes.White, x+1, y);
-                g.DrawString(text, Font, Brushes.White, x, y-1);
-                g.DrawString(text, Font, Brushes.White, x, y+1);
+                g.DrawString(text, Font, Brushes.White, x - 1, y);
+                g.DrawString(text, Font, Brushes.White, x + 1, y);
+                g.DrawString(text, Font, Brushes.White, x, y - 1);
+                g.DrawString(text, Font, Brushes.White, x, y + 1);
                 g.DrawString(text, Font, brush, x, y);
                 return size;
             }
         }
-        static float Align(float x, float size, StringAlignment align) => 
-            align == StringAlignment.Center ? x - size/2 : 
-            align == StringAlignment.Far    ? x - size : x;
+        static float Align(float x, float size, StringAlignment align) =>
+            align == StringAlignment.Center ? x - size / 2 :
+            align == StringAlignment.Far ? x - size : x;
 
         static readonly Color[] SeriesColors = new Color[] {
-            Color.DarkGreen, Color.Teal, Color.MediumBlue, Color.MediumPurple, Color.DeepPink, Color.Orange, Color.Brown, Color.Black, 
-            Color.LawnGreen, Color.DarkTurquoise, Color.DodgerBlue, Color.Fuchsia, Color.Red, Color.Salmon, Color.PeachPuff
-        };
+        Color.DarkGreen, Color.Teal, Color.MediumBlue, Color.MediumPurple, Color.DeepPink, Color.Orange, Color.Brown, Color.Black,
+        Color.LawnGreen, Color.DarkTurquoise, Color.DodgerBlue, Color.Fuchsia, Color.Red, Color.Salmon, Color.PeachPuff
+    };
 
         internal static Pen MakePen(LNode expr, int seriesIndex = -1) // -1 = axis line
         {
@@ -107,15 +117,18 @@ namespace LesGraphingCalc
             if (seriesIndex > -1)
                 color = SeriesColors[seriesIndex % SeriesColors.Length];
 
-            foreach (var attr in expr.Attrs.Where(a => a.IsId)) {
+            foreach (var attr in expr.Attrs.Where(a => a.IsId))
+            {
                 // Try to interpret identifier as a color or dash style
-                if (!TryInterpretAsColor(attr, ref color)) {
+                if (!TryInterpretAsColor(attr, ref color))
+                {
                     if (Enum.TryParse<DashStyle>(attr.Name.Name, true, out dash_))
                         dash = dash_;
                 }
             }
             if (seriesIndex > -1)
-                foreach (var attr in expr.Attrs.Where(a => a.IsLiteral)) {
+                foreach (var attr in expr.Attrs.Where(a => a.IsLiteral))
+                {
                     // Interpret literal as a line width
                     lineWidth = Convert.ToInt32(attr.Value, null);
                 }
@@ -123,9 +136,11 @@ namespace LesGraphingCalc
         }
         internal static bool TryInterpretAsColor(LNode attr, ref Color color)
         {
-            if (attr.IsId) {
+            if (attr.IsId)
+            {
                 var p = typeof(Color).GetProperty(attr.Name.Name, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Static);
-                if (p != null) {
+                if (p != null)
+                {
                     color = (Color)p.GetMethod.Invoke(null, null);
                     return true;
                 }
@@ -141,7 +156,8 @@ namespace LesGraphingCalc
             g.SmoothingMode = SmoothingMode.AntiAlias;
             PointF[] points = new PointF[data.Length];
             int x;
-            for (x = 0; x < data.Length; x++) {
+            for (x = 0; x < data.Length; x++)
+            {
                 float y = (float)(YRange.PxCount - 1 - YRange.ValueToPx(data[x]));
                 points[x] = new PointF(x, (float)y);
             }
@@ -151,8 +167,10 @@ namespace LesGraphingCalc
         private void DrawLinesSafe(Graphics g, Pen pen, PointF[] points)
         {
             int x, start = 0;
-            for (x = 0; x < points.Length; x++) {
-                if (float.IsNaN(points[x].Y) || float.IsInfinity(points[x].Y)) {
+            for (x = 0; x < points.Length; x++)
+            {
+                if (float.IsNaN(points[x].Y) || float.IsInfinity(points[x].Y))
+                {
                     if (x > start)
                         DrawLinesWorkaround(g, pen, points.Slice(start, x - start).ToArray());
                     start = x + 1;
@@ -164,7 +182,8 @@ namespace LesGraphingCalc
 
         private void DrawLinesWorkaround(Graphics g, Pen pen, PointF[] points)
         {
-            for (int i = 0; i < points.Length; i++) {
+            for (int i = 0; i < points.Length; i++)
+            {
                 if (points[i].Y > 10000000) points[i].Y = 10000000;
                 if (points[i].Y < -10000000) points[i].Y = -10000000;
             }
@@ -174,28 +193,34 @@ namespace LesGraphingCalc
                 g.DrawLines(pen, points);
         }
 
-        static readonly Color[] ColorBands = new Color[] { Color.Black,Color.White  };
+        static readonly Color[] ColorBands = new Color[] { Color.Black, Color.White };
         static Color[] HeatColors = null;
 
         void RenderXYFunc(double[,] data, bool booleanMode, Color trueColor)
         {
-            if (HeatColors == null) {
+            if (HeatColors == null)
+            {
                 HeatColors = new Color[(ColorBands.Length - 1) * 16];
-                for (int band = 0; band < ColorBands.Length - 1; band++) {
+                for (int band = 0; band < ColorBands.Length - 1; band++)
+                {
                     Color lo = ColorBands[band], hi = ColorBands[band + 1];
-                    for (int hii = 0; hii < 16; hii++) {
+                    for (int hii = 0; hii < 16; hii++)
+                    {
                         int loi = 16 - hii;
-                        HeatColors[band * 16 + hii] = Color.FromArgb((lo.R * loi + hi.R * hii) >> 4, 
-                                                                     (lo.G * loi + hi.G * hii) >> 4, 
+                        HeatColors[band * 16 + hii] = Color.FromArgb((lo.R * loi + hi.R * hii) >> 4,
+                                                                     (lo.G * loi + hi.G * hii) >> 4,
                                                                      (lo.B * loi + hi.B * hii) >> 4);
                     }
                 }
             }
             Color nanColor = Color.FromArgb(trueColor.R / 2 + 64, trueColor.G / 2 + 64, trueColor.B / 2 + 64);
-            for (int y = 0; y < data.GetLength(0); y++) {
-                for (int x = 0; x < data.GetLength(1); x++) {
+            for (int y = 0; y < data.GetLength(0); y++)
+            {
+                for (int x = 0; x < data.GetLength(1); x++)
+                {
                     double d = data[y, x];
-                    if (!booleanMode) {
+                    if (!booleanMode)
+                    {
                         ZRange.PxCount = HeatColors.Length;
                         double z = ZRange.ValueToPx(data[y, x]);
                         Color c;
@@ -203,12 +228,15 @@ namespace LesGraphingCalc
                             c = Color.DarkGray; // which is lighter than "Gray"
                         else if (double.IsInfinity(z))
                             c = Color.Purple;
-                        else {
+                        else
+                        {
                             int z2 = (int)G.PutInRange(ZRange.ValueToPx(data[y, x]), 0, HeatColors.Length - 1);
                             c = HeatColors[z2];
-                        }                        
+                        }
                         Bitmap.SetPixel(x, Bitmap.Height - 1 - y, c);
-                    } else if (!(d == 0)) {
+                    }
+                    else if (!(d == 0))
+                    {
                         Bitmap.SetPixel(x, Bitmap.Height - 1 - y, double.IsNaN(d) ? nanColor : trueColor);
                     }
                 }
@@ -221,14 +249,18 @@ namespace LesGraphingCalc
                 return; // Transparent: user turned off contour lines
             double frequency = 1.0 / interval;
             int w = data.GetLength(1), h = data.GetLength(0);
-            for (int y = 0; y < data.GetLength(0); y++) {
-                for (int x = 0; x < data.GetLength(1); x++) {
+            for (int y = 0; y < data.GetLength(0); y++)
+            {
+                for (int x = 0; x < data.GetLength(1); x++)
+                {
                     double d = data[y, x];
                     bins[y, x] = (sbyte)(d < ZRange.Lo ? -2 : d >= ZRange.Hi ? 127 : (int)Math.Floor((d - lo) * frequency));
                 }
             }
-            for (int y = 0; y < data.GetLength(0) - 1; y++) {
-                for (int x = 0; x < data.GetLength(1) - 1; x++) {
+            for (int y = 0; y < data.GetLength(0) - 1; y++)
+            {
+                for (int x = 0; x < data.GetLength(1) - 1; x++)
+                {
                     var b = bins[y, x];
                     if (b != bins[y, x + 1] || b != bins[y + 1, x] || b != bins[y + 1, x + 1])
                         Bitmap.SetPixel(x, YRange.PxCount - 1 - y, color);
@@ -242,7 +274,8 @@ namespace LesGraphingCalc
         static void FindMinMax(double[] data, ref double min, ref double max)
         {
             foreach (double d in data)
-                if (!double.IsInfinity(d)) {
+                if (!double.IsInfinity(d))
+                {
                     min = Min(min, d);
                     max = Max(max, d);
                 }
@@ -250,10 +283,13 @@ namespace LesGraphingCalc
         static void FindMinMax(double[,] data, ref double min, ref double max)
         {   // Seems like there ought to be a way to do this in fewer LoC.
             // Better to have used jagged arrays?
-            for (int y = 0; y < data.GetLength(0); y++) {
-                for (int x = 0; x < data.GetLength(1); x++) {
+            for (int y = 0; y < data.GetLength(0); y++)
+            {
+                for (int x = 0; x < data.GetLength(1); x++)
+                {
                     var d = data[y, x];
-                    if (!double.IsInfinity(d)) {
+                    if (!double.IsInfinity(d))
+                    {
                         min = Min(min, d);
                         max = Max(max, d);
                     }
@@ -279,7 +315,8 @@ namespace LesGraphingCalc
             // Start with an interval that is too large, and reduce it until we have enough lines.
             double interval = Math.Pow(10, Math.Ceiling(Math.Log10(dif)));
             int third = 0;
-            for (double roughLinesNow = 1; roughLinesNow < roughLines; third = (third + 1) % 3) {
+            for (double roughLinesNow = 1; roughLinesNow < roughLines; third = (third + 1) % 3)
+            {
                 // interval is multiplied cumulatively by 0.1 every three steps
                 double ratio = third == 2 ? 0.4 : 0.5;
                 interval *= ratio;
@@ -292,11 +329,13 @@ namespace LesGraphingCalc
 
         private static void MaybeChooseAutoZRange(GraphRange range, double[,] data)
         {
-            if (data != null && range.AutoRange) {
+            if (data != null && range.AutoRange)
+            {
                 range.Lo = double.NaN;
                 range.Hi = double.NaN;
                 FindMinMax(data, ref range.Lo, ref range.Hi);
-                if (double.IsNaN(range.Lo)) {
+                if (double.IsNaN(range.Lo))
+                {
                     range.Lo = -1;
                     range.Hi = 1;
                 }
@@ -307,38 +346,46 @@ namespace LesGraphingCalc
         {
             // Draw vertical lines based on X axis
             double xLo, xInterval = ChooseGridSpacing(out xLo, XRange);
-            for (double x = xLo; x <= XRange.Hi; x += xInterval) {
+            for (double x = xLo; x <= XRange.Hi; x += xInterval)
+            {
                 float px = (float)XRange.ValueToPx(x);
                 g.DrawLine(XRange.LinePen, px, 0, px, YRange.PxCount);
             }
-            if (XRange.Lo <= 0 && 0 <= XRange.Hi) {
+            if (XRange.Lo <= 0 && 0 <= XRange.Hi)
+            {
                 float px = (float)XRange.ValueToPx(0);
                 g.DrawLine(XRange.AxisPen, px, 0, px, YRange.PxCount);
             }
 
             // Draw horizontal lines based on Y axis
             double yLo, yInterval = ChooseGridSpacing(out yLo, YRange);
-            for (double y = yLo; y <= YRange.Hi; y += yInterval) {
+            for (double y = yLo; y <= YRange.Hi; y += yInterval)
+            {
                 float px = YRange.PxCount - 1 - (float)YRange.ValueToPx(y);
                 g.DrawLine(YRange.LinePen, 0, px, XRange.PxCount, px);
             }
-            if (YRange.Lo <= 0 && 0 <= YRange.Hi) {
+            if (YRange.Lo <= 0 && 0 <= YRange.Hi)
+            {
                 float px = YRange.PxCount - 1 - (float)YRange.ValueToPx(0);
                 g.DrawLine(YRange.AxisPen, 0, px, XRange.PxCount, px);
             }
 
             // Draw numeric labels
             float lastWidth = 0, lastPx = -1000;
-            for (double x = xLo; x <= XRange.Hi; x += xInterval) {
+            for (double x = xLo; x <= XRange.Hi; x += xInterval)
+            {
                 float px = (float)XRange.ValueToPx(x);
-                if (px > 20 && px - lastPx > lastWidth) {
+                if (px > 20 && px - lastPx > lastWidth)
+                {
                     lastWidth = DrawText(g, x.ToString("G7"), px, Bitmap.Height - 4, XRange.AxisPen.Color, StringAlignment.Center, StringAlignment.Far).Width;
                     lastPx = px;
                 }
             }
-            for (double y = yLo; y <= YRange.Hi; y += yInterval) {
+            for (double y = yLo; y <= YRange.Hi; y += yInterval)
+            {
                 float px = Bitmap.Height - 1 - (float)YRange.ValueToPx(y);
-                if (px > 10 && px < Bitmap.Height-40) {
+                if (px > 10 && px < Bitmap.Height - 40)
+                {
                     DrawText(g, y.ToString("G7"), 4, px, YRange.AxisPen.Color, StringAlignment.Near, StringAlignment.Center);
                 }
             }
@@ -351,15 +398,19 @@ namespace LesGraphingCalc
             int x = pt.X, y = YRange.PxCount - 1 - pt.Y;
             double xval = XRange.PxToValue(x);
             double yval = YRange.PxToValue(y);
-            if (Calcs.Count == 1) {
+            if (Calcs.Count == 1)
+            {
                 var val = Calcs[0].GetValueAt(x, y);
-                if (val != null) {
+                if (val != null)
+                {
                     if (Calcs[0] is Calculator3D)
                         return "{0} @ ({1:G4}, {2:G4})".Localized(val.Value, xval, yval);
                     else
                         return "{0} @ X = {1:G8}".Localized(val.Value, xval);
                 }
-            } else if (Calcs.Count >= 2) {
+            }
+            else if (Calcs.Count >= 2)
+            {
                 var fmt = Calcs.Count == 2 ? "G8" : "G5";
                 return "{1} @ X = {0:G4}".Localized(xval,
                     string.Join("; ", Calcs.Select(c => (c.GetValueAt(x, y) ?? double.NaN).ToString(fmt))));
@@ -385,13 +436,13 @@ namespace LesGraphingCalc
             AutoRange = lo >= hi;
         }
 
-        public static GraphRange New(string rangeName, LNode range, int numPixels, Dictionary<Symbol,LNode> varDict)
+        public static GraphRange New(string rangeName, LNode range, int numPixels, Dictionary<Symbol, LNode> varDict)
         {
             if (range == null)
                 return new GraphRange(-1, 1, numPixels, Pens.MidnightBlue, null) { AutoRange = true };
             if (range.Calls(CodeSymbols.Colon, 2) && range[0].IsId && string.Compare(range[0].Name.Name, rangeName, true) == 0)
-                range = range[1]; 
-            
+                range = range[1];
+
             if (range.Calls(CodeSymbols.Sub, 2) || range.Calls(CodeSymbols.DotDot, 2))
             {
                 double lo = CalculatorCore.Eval(range[0], varDict);

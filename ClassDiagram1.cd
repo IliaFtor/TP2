@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="LesGraphingCalc.CalculeteModel.Calculator2D" Collapsed="true">
+    <Position X="8" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAGAAABAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAI=</HashCode>
+      <FileName>CalculeteModel\Calculator2D.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LesGraphingCalc.CalculeteModel.Calculator3D" Collapsed="true">
+    <Position X="10.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAGAEABgIAAAAACAQAAAAAAgAAAAAAAAAAAAAAI=</HashCode>
+      <FileName>CalculeteModel\Calculator3D.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LesGraphingCalc.Controllers.DirectBitmap" Collapsed="true">
+    <Position X="10.5" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAABAABSAAgACAAAgAAEAAAAAAAAAAAAAAAAACAAA=</HashCode>
+      <FileName>Controllers\DirectBitmap.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="LesGraphingCalc.OutputState" Collapsed="true">
+    <Position X="12.25" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAFkAEIAAFAgAQgIpECAEAQAFAAIAggACAIA=</HashCode>
+      <FileName>Controllers\OutputState.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LesGraphingCalc.GraphRange" Collapsed="true">
+    <Position X="8" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAAAEAAAACAAAAAAAABAAABAAAAAAAAAAAQAAAI=</HashCode>
+      <FileName>Controllers\OutputState.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

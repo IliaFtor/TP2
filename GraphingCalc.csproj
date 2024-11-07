@@ -98,17 +98,12 @@
     <Compile Include="CalcForm.Designer.cs">
       <DependentUpon>CalcForm.cs</DependentUpon>
     </Compile>
-    <None Include="Calculators.ecs">
-      <Generator>LeMP</Generator>
-      <LastGenOutput>Calculators.out.cs</LastGenOutput>
-    </None>
-    <Compile Include="Calculators.out.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Calculators.ecs</DependentUpon>
-    </Compile>
-    <Compile Include="DirectBitmap.cs" />
-    <Compile Include="OutputState.cs" />
+    <Compile Include="CalculeteModel\CalcRange.cs" />
+    <Compile Include="CalculeteModel\Calculator2D.cs" />
+    <Compile Include="CalculeteModel\Calculator3D.cs" />
+    <Compile Include="CalculeteModel\CalculatorCore.cs" />
+    <Compile Include="Controllers\DirectBitmap.cs" />
+    <Compile Include="Controllers\OutputState.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="CalcForm.resx">
@@ -124,6 +119,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <None Include="ClassDiagram1.cd" />
     <None Include="GraphingCalc_TemporaryKey.pfx" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
