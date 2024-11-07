@@ -19,7 +19,13 @@ namespace LesGraphingCalc.Controllers {
         {
             Bits = new Int32[height, width];
             BitsHandle = GCHandle.Alloc(Bits, GCHandleType.Pinned);
-            Bitmap = new Bitmap(width, height, width * 4, PixelFormat.Format32bppPArgb, BitsHandle.AddrOfPinnedObject());
+            try
+            {
+                Bitmap = new Bitmap(width, height, width * 4, PixelFormat.Format32bppPArgb, BitsHandle.AddrOfPinnedObject());
+            }
+            catch (Exception ex) {
+                throw new FormatException("Empty string { }",ex);
+            }
         }
 
         public void Dispose()

@@ -57,16 +57,9 @@ namespace LesGraphingCalc
 
         private void CalcForm_Load(object sender, EventArgs e)
         {
-            SetUpComboBox(cbFormulas, "Formulas", "sin(x) + x**2/10 - 1   // Winding road\n" 
-                                                + "sqrt(x**2+y**2) - cos(atan(y,x) * 5); // Flower\n"
-                                                + "@navy x^2+y^2<=4^2;  @goldenrod y < 7-x^2 && y>(x<1.3 ? -((x-1.3)^2)/4 : - ((x-1.3)^2)); @black sqrt(x**2+(y-3)**2)*1.5 - cos(atan(y-3,x)*5-1.4)/2<1; // Starfleet\n"
-                                                + "x^2+y^2==4^2   // Circle\n"
-                                                + "(x**2+y**2-1)**3 == x**2*y**3 // Heart\n"
-                                                + "@purple rnd()*abs(x*y)<0.25  // Noisy star\n"
-                                                + "x^2+y^2 < 4 || (+y < 0.5 && +x < 4) || (+y < 5 && +x in (4,5))  // Tie fighter\n"
-                                                + "4 % x\n" + "\n");
+            SetUpComboBox(cbFormulas, "Formulas", "x**x-x*y+y**y");
             SetUpComboBox(cbVariables, "Variables", "x=1\n"
-                                                  + "x=1; r=sqrt(x**2+y**2); theta=mod(atan(y,x),tau)");
+                                                  );
             SetUpComboBox(cbRanges, "Ranges", "-10..10;\n"
                                              +"-5..5; \n"
                                              +"-2..2; \n"

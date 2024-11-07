@@ -193,7 +193,16 @@ namespace LesGraphingCalc
                 g.DrawLines(pen, points);
         }
 
-        static readonly Color[] ColorBands = new Color[] { Color.Black, Color.White };
+        static readonly Color[] ColorBands = new Color[]
+        {
+            Color.FromArgb(0  , 47,  85), // Глубокий синий
+            Color.FromArgb(255, 204, 0, 204),  // Фиолетовый
+            Color.FromArgb(255, 102, 0, 255),  // Сине-фиолетовый
+            Color.FromArgb(255, 255, 255, 0),   // Желтый
+            Color.FromArgb(255, 255, 102, 0),  // Светло-оранжевый
+            Color.FromArgb(255, 255, 0, 102),  // Розовый
+            Color.FromArgb(255, 255, 0, 0)    // Красный
+        };  
         static Color[] HeatColors = null;
 
         void RenderXYFunc(double[,] data, bool booleanMode, Color trueColor)
@@ -348,13 +357,25 @@ namespace LesGraphingCalc
             double xLo, xInterval = ChooseGridSpacing(out xLo, XRange);
             for (double x = xLo; x <= XRange.Hi; x += xInterval)
             {
-                float px = (float)XRange.ValueToPx(x);
-                g.DrawLine(XRange.LinePen, px, 0, px, YRange.PxCount);
+                float px = (float)XRange.ValueToPx(x);//try
+                try
+                {
+                    g.DrawLine(XRange.LinePen, px, 0, px, YRange.PxCount);
+                }
+                catch (Exception e) {
+                    throw new FormatException("Fatal error: { }", e);
+                }
             }
             if (XRange.Lo <= 0 && 0 <= XRange.Hi)
             {
                 float px = (float)XRange.ValueToPx(0);
-                g.DrawLine(XRange.AxisPen, px, 0, px, YRange.PxCount);
+                try
+                {
+                    g.DrawLine(XRange.AxisPen, px, 0, px, YRange.PxCount);
+                }
+                catch (Exception e){
+                    throw new FormatException("Fatal error: { }",e);
+                }
             }
 
             // Draw horizontal lines based on Y axis
@@ -362,12 +383,23 @@ namespace LesGraphingCalc
             for (double y = yLo; y <= YRange.Hi; y += yInterval)
             {
                 float px = YRange.PxCount - 1 - (float)YRange.ValueToPx(y);
-                g.DrawLine(YRange.LinePen, 0, px, XRange.PxCount, px);
+                try
+                {
+                    g.DrawLine(YRange.LinePen, 0, px, XRange.PxCount, px);
+                }
+                catch (Exception e) {
+                    throw new FormatException("Fatal error: { }", e);
+                }
             }
             if (YRange.Lo <= 0 && 0 <= YRange.Hi)
             {
                 float px = YRange.PxCount - 1 - (float)YRange.ValueToPx(0);
-                g.DrawLine(YRange.AxisPen, 0, px, XRange.PxCount, px);
+                try
+                {
+                    g.DrawLine(YRange.AxisPen, 0, px, XRange.PxCount, px);
+                }
+                catch (Exception e) { throw new FormatException("Fatal error: { }", e); }
+
             }
 
             // Draw numeric labels

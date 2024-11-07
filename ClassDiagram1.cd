@@ -36,5 +36,19 @@
       <FileName>Controllers\OutputState.cs</FileName>
     </TypeIdentifier>
   </Class>
+  <Class Name="LesGraphingCalc.CalculeteModel.CalcRange" Collapsed="true">
+    <Position X="14" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAAAABAAAMAAAAAAAAIAAAAUAAgAAAAAAAAAAAACAAA=</HashCode>
+      <FileName>CalculeteModel\CalcRange.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LesGraphingCalc.CalculeteModel.CalculatorCore" Collapsed="true">
+    <Position X="9.5" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAhAAGAIYBgACAAAACwAAAACCQAAAAACCAEgABAAAI=</HashCode>
+      <FileName>CalculeteModel\CalculatorCore.cs</FileName>
+    </TypeIdentifier>
+  </Class>
   <Font Name="Segoe UI" Size="9" />
 </ClassDiagram>

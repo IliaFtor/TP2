@@ -94,9 +94,9 @@ namespace LesGraphingCalc.CalculeteModel
             {
                 lookup = name => (name == sy_x ? x : name == sy_y ? y : Eval(Vars[name], lookup));
             }
-            catch
+            catch(Exception e)
             {
-                throw new FormatException("The function must have sensitive case variables{ }");
+                throw new FormatException("The function must have sensitive case variables{ }",e);
             }
 
             for (int yi = 0; yi < results.GetLength(0); yi++, x = startx)
