@@ -54,36 +54,40 @@
             // lblFormula
             // 
             this.lblFormula.AutoSize = true;
-            this.lblFormula.Location = new System.Drawing.Point(7, 12);
+            this.lblFormula.Location = new System.Drawing.Point(9, 15);
+            this.lblFormula.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblFormula.Name = "lblFormula";
-            this.lblFormula.Size = new System.Drawing.Size(44, 13);
+            this.lblFormula.Size = new System.Drawing.Size(56, 16);
             this.lblFormula.TabIndex = 0;
             this.lblFormula.Text = "&Formula";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(7, 71);
+            this.label2.Location = new System.Drawing.Point(9, 87);
+            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(44, 13);
+            this.label2.Size = new System.Drawing.Size(55, 16);
             this.label2.TabIndex = 6;
             this.label2.Text = "&Ranges";
             // 
             // lblVariables
             // 
             this.lblVariables.AutoSize = true;
-            this.lblVariables.Location = new System.Drawing.Point(7, 41);
+            this.lblVariables.Location = new System.Drawing.Point(9, 50);
+            this.lblVariables.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblVariables.Name = "lblVariables";
-            this.lblVariables.Size = new System.Drawing.Size(50, 13);
+            this.lblVariables.Size = new System.Drawing.Size(65, 16);
             this.lblVariables.TabIndex = 2;
             this.lblVariables.Text = "&Variables";
             // 
             // lblResultLbl
             // 
             this.lblResultLbl.AutoSize = true;
-            this.lblResultLbl.Location = new System.Drawing.Point(7, 99);
+            this.lblResultLbl.Location = new System.Drawing.Point(9, 122);
+            this.lblResultLbl.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblResultLbl.Name = "lblResultLbl";
-            this.lblResultLbl.Size = new System.Drawing.Size(40, 13);
+            this.lblResultLbl.Size = new System.Drawing.Size(48, 16);
             this.lblResultLbl.TabIndex = 4;
             this.lblResultLbl.Text = "Result:";
             // 
@@ -95,10 +99,12 @@
             this.cbFormulas.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cbFormulas.FormattingEnabled = true;
             this.cbFormulas.IntegralHeight = false;
-            this.cbFormulas.Location = new System.Drawing.Point(63, 4);
+            this.cbFormulas.Location = new System.Drawing.Point(84, 5);
+            this.cbFormulas.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.cbFormulas.Name = "cbFormulas";
-            this.cbFormulas.Size = new System.Drawing.Size(385, 26);
+            this.cbFormulas.Size = new System.Drawing.Size(512, 31);
             this.cbFormulas.TabIndex = 1;
+            this.cbFormulas.SelectedIndexChanged += new System.EventHandler(this.cbFormulas_SelectedIndexChanged);
             // 
             // cbRanges
             // 
@@ -108,10 +114,11 @@
             this.cbRanges.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cbRanges.FormattingEnabled = true;
             this.cbRanges.IntegralHeight = false;
-            this.cbRanges.ItemHeight = 18;
-            this.cbRanges.Location = new System.Drawing.Point(63, 63);
+            this.cbRanges.ItemHeight = 23;
+            this.cbRanges.Location = new System.Drawing.Point(84, 78);
+            this.cbRanges.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.cbRanges.Name = "cbRanges";
-            this.cbRanges.Size = new System.Drawing.Size(385, 26);
+            this.cbRanges.Size = new System.Drawing.Size(512, 31);
             this.cbRanges.TabIndex = 7;
             // 
             // cbVariables
@@ -122,9 +129,10 @@
             this.cbVariables.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cbVariables.FormattingEnabled = true;
             this.cbVariables.IntegralHeight = false;
-            this.cbVariables.Location = new System.Drawing.Point(63, 33);
+            this.cbVariables.Location = new System.Drawing.Point(84, 41);
+            this.cbVariables.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.cbVariables.Name = "cbVariables";
-            this.cbVariables.Size = new System.Drawing.Size(385, 26);
+            this.cbVariables.Size = new System.Drawing.Size(512, 31);
             this.cbVariables.TabIndex = 3;
             // 
             // panel1
@@ -140,8 +148,9 @@
             this.panel1.Controls.Add(this.txtResult);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 0);
+            this.panel1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(454, 122);
+            this.panel1.Size = new System.Drawing.Size(605, 150);
             this.panel1.TabIndex = 7;
             // 
             // lblMouseOver
@@ -149,9 +158,10 @@
             this.lblMouseOver.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblMouseOver.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblMouseOver.Location = new System.Drawing.Point(68, 95);
+            this.lblMouseOver.Location = new System.Drawing.Point(91, 117);
+            this.lblMouseOver.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblMouseOver.Name = "lblMouseOver";
-            this.lblMouseOver.Size = new System.Drawing.Size(375, 20);
+            this.lblMouseOver.Size = new System.Drawing.Size(500, 25);
             this.lblMouseOver.TabIndex = 5;
             this.lblMouseOver.Text = "1.23456789 @ X=1.23456789";
             this.lblMouseOver.TextAlign = System.Drawing.ContentAlignment.TopRight;
@@ -162,10 +172,11 @@
             this.txtResult.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtResult.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtResult.Location = new System.Drawing.Point(63, 91);
+            this.txtResult.Location = new System.Drawing.Point(84, 112);
+            this.txtResult.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.txtResult.Name = "txtResult";
             this.txtResult.ReadOnly = true;
-            this.txtResult.Size = new System.Drawing.Size(385, 27);
+            this.txtResult.Size = new System.Drawing.Size(512, 32);
             this.txtResult.TabIndex = 8;
             // 
             // panelError
@@ -174,18 +185,20 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panelError.Controls.Add(this.pictureBox1);
             this.panelError.Controls.Add(this.txtError);
-            this.panelError.Location = new System.Drawing.Point(10, 132);
+            this.panelError.Location = new System.Drawing.Point(13, 162);
+            this.panelError.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.panelError.Name = "panelError";
-            this.panelError.Size = new System.Drawing.Size(432, 61);
+            this.panelError.Size = new System.Drawing.Size(576, 75);
             this.panelError.TabIndex = 8;
             this.panelError.Visible = false;
             // 
             // pictureBox1
             // 
             this.pictureBox1.Image = global::LesGraphingCalc.Properties.Resources.error;
-            this.pictureBox1.Location = new System.Drawing.Point(4, 5);
+            this.pictureBox1.Location = new System.Drawing.Point(5, 6);
+            this.pictureBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(32, 32);
+            this.pictureBox1.Size = new System.Drawing.Size(43, 39);
             this.pictureBox1.TabIndex = 1;
             this.pictureBox1.TabStop = false;
             // 
@@ -195,12 +208,13 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtError.Font = new System.Drawing.Font("Lucida Console", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtError.Location = new System.Drawing.Point(37, 0);
+            this.txtError.Location = new System.Drawing.Point(49, 0);
+            this.txtError.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.txtError.Multiline = true;
             this.txtError.Name = "txtError";
             this.txtError.ReadOnly = true;
             this.txtError.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtError.Size = new System.Drawing.Size(393, 60);
+            this.txtError.Size = new System.Drawing.Size(523, 73);
             this.txtError.TabIndex = 0;
             // 
             // graphPanel
@@ -209,9 +223,10 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.graphPanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.graphPanel.Location = new System.Drawing.Point(0, 121);
+            this.graphPanel.Location = new System.Drawing.Point(0, 149);
+            this.graphPanel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.graphPanel.Name = "graphPanel";
-            this.graphPanel.Size = new System.Drawing.Size(454, 332);
+            this.graphPanel.Size = new System.Drawing.Size(604, 408);
             this.graphPanel.TabIndex = 9;
             this.graphPanel.TabStop = false;
             this.graphPanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.picPanel_MouseDown);
@@ -226,9 +241,10 @@
             this.btnZoomOut.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnZoomOut.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnZoomOut.Image = ((System.Drawing.Image)(resources.GetObject("btnZoomOut.Image")));
-            this.btnZoomOut.Location = new System.Drawing.Point(373, 122);
+            this.btnZoomOut.Location = new System.Drawing.Point(497, 150);
+            this.btnZoomOut.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnZoomOut.Name = "btnZoomOut";
-            this.btnZoomOut.Size = new System.Drawing.Size(37, 37);
+            this.btnZoomOut.Size = new System.Drawing.Size(49, 46);
             this.btnZoomOut.TabIndex = 9;
             this.btnZoomOut.UseVisualStyleBackColor = true;
             this.btnZoomOut.Click += new System.EventHandler(this.btnZoomOut_Click);
@@ -239,9 +255,10 @@
             this.btnZoomIn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnZoomIn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnZoomIn.Image = ((System.Drawing.Image)(resources.GetObject("btnZoomIn.Image")));
-            this.btnZoomIn.Location = new System.Drawing.Point(337, 122);
+            this.btnZoomIn.Location = new System.Drawing.Point(449, 150);
+            this.btnZoomIn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnZoomIn.Name = "btnZoomIn";
-            this.btnZoomIn.Size = new System.Drawing.Size(37, 37);
+            this.btnZoomIn.Size = new System.Drawing.Size(49, 46);
             this.btnZoomIn.TabIndex = 8;
             this.btnZoomIn.UseVisualStyleBackColor = true;
             this.btnZoomIn.Click += new System.EventHandler(this.btnZoomIn_Click);
@@ -252,18 +269,19 @@
             this.btnCopy.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCopy.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnCopy.Image = ((System.Drawing.Image)(resources.GetObject("btnCopy.Image")));
-            this.btnCopy.Location = new System.Drawing.Point(409, 122);
+            this.btnCopy.Location = new System.Drawing.Point(545, 150);
+            this.btnCopy.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnCopy.Name = "btnCopy";
-            this.btnCopy.Size = new System.Drawing.Size(37, 37);
+            this.btnCopy.Size = new System.Drawing.Size(49, 46);
             this.btnCopy.TabIndex = 10;
             this.btnCopy.UseVisualStyleBackColor = true;
             this.btnCopy.Click += new System.EventHandler(this.btnCopy_Click);
             // 
             // CalcForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(454, 453);
+            this.ClientSize = new System.Drawing.Size(605, 558);
             this.Controls.Add(this.panelError);
             this.Controls.Add(this.btnZoomIn);
             this.Controls.Add(this.btnCopy);
@@ -271,6 +289,7 @@
             this.Controls.Add(this.graphPanel);
             this.Controls.Add(this.panel1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "CalcForm";
             this.Text = " Graphing Calculator";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.CalcForm_FormClosed);

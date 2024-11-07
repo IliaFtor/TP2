@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 
-public class DirectBitmap : IDisposable // Thanks SaxxonPike
+public class DirectBitmap : IDisposable 
 {
     public Bitmap Bitmap { get; private set; }
     public Int32[,] Bits { get; private set; }

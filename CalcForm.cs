@@ -24,15 +24,14 @@ namespace LesGraphingCalc
         {
             InitializeComponent();
 
-            // Prepare to calculate and draw on a background thread
             _bw.DoWork += (s, e) => {
                 var state = (OutputState)(e.Result = e.Argument);
                 try {
-                    foreach (var c in state.Calcs) c.Run(); // do calculations
+                    foreach (var c in state.Calcs) c.Run(); 
                     state.RenderAll();
                 } catch {
                     if (state.Bitmap != _outState?.Bitmap)
-                        state.Bitmap.Dispose(); // the new bitmap won't be used
+                        state.Bitmap.Dispose(); 
                     throw;
                 }
             };
@@ -94,11 +93,10 @@ namespace LesGraphingCalc
                 if (e.KeyChar == '\r') {
                     AddHistory(comboBox, comboBox.Text, true);
                     Properties.Settings.Default.Save();
-                    e.Handled = true; // prevent error sound
+                    e.Handled = true; 
                 }
             };
             comboBox.Resize += (s, e) => {
-                // Workaround for ComboBox bug (Text changes on resize!)
                 comboBox.Text = comboBox.Tag as string ?? comboBox.Text;
             };
             comboBox.TextChanged += (s, e) => {
@@ -157,21 +155,18 @@ namespace LesGraphingCalc
         OutputState PrepareCalculators()
         {
             try {
-                // Parse the three combo boxes and build a dictionary of variables
                 var exprs = ParseExprs("Formula", cbFormulas.Text);
                 var variables = ParseExprs("Variables", string.Format(CultureInfo.InvariantCulture, 
 					"pi={0};tau={1};e={2};phi=1.6180339887498948; {3}", Math.PI, Math.PI*2, Math.E, cbVariables.Text));
                 var ranges = ParseExprs("Range", cbRanges.Text);
                 var varDict = CalculatorCore.ParseVarList(variables);
 
-                // Get display range.
                 Size size = graphPanel.ClientSize;
                 LNode xRangeExpr = ranges.TryGet(0, null), yRangeExpr = ranges.TryGet(1, null);
                 var xRange = GraphRange.New("x", xRangeExpr, size.Width, varDict);
                 var yRange = GraphRange.New("y", yRangeExpr ?? xRangeExpr, size.Height, varDict);
                 var zRange = GraphRange.New("z", ranges.TryGet(2, null), 0, varDict);
-                yRange.AutoRange = (yRangeExpr == null); // For functions of x only; ignored if y is used
-
+                yRange.AutoRange = (yRangeExpr == null); 
                 var calcs = exprs.Select(e => CalculatorCore.New(e, varDict, xRange, yRange)).ToList();
 
                 panelError.Visible = false;
@@ -236,7 +231,6 @@ namespace LesGraphingCalc
 
         static List<LNode> ParseExprs(string fieldName, string text)
         {
-            // Separate things like *- into two separate operators (* -), and change ^ to **
             text = System.Text.RegularExpressions.Regex.Replace(text, @"([-+*/%^&*|<>=?.])([-~!+])", "$1 $2");
             text = System.Text.RegularExpressions.Regex.Replace(text, @"\^", "**");
 
@@ -311,9 +305,13 @@ namespace LesGraphingCalc
                 Clipboard.SetImage(graphPanel.Image);
         }
 
+        private void cbFormulas_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            
+        }
+
         void SetRanges(CalcRange xRange, CalcRange yRange, string zRangeText)
         {
-            // Refreshes display as side effect
             var newRanges = string.Format(CultureInfo.InvariantCulture, "{0:G8}..{1:G8}; {2:G8}..{3:G8}; {4}", 
                             xRange.Lo, xRange.Hi, yRange.Lo, yRange.Hi, zRangeText);
             Trace.WriteLine(newRanges);

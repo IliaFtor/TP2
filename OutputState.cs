@@ -12,7 +12,6 @@ using System.Runtime.InteropServices;
 
 namespace LesGraphingCalc
 {
-    // Holds output data and output bitmap, and performs rendering
     class OutputState
     {
         public List<CalculatorCore> Calcs;
@@ -33,14 +32,12 @@ namespace LesGraphingCalc
             using (var g = Graphics.FromImage(Bitmap.Bitmap)) {
                 g.Clear(Color.White);
 
-                // Y-range can be autodetected only if there are no "3D" functions already using Y
                 if (YRange.AutoRange && Calcs.All(c => c.Results is double[])) {
                     YRange.Lo = -0.5;
                     YRange.Hi = 1;
                     Calcs.ForEach(c => FindMinMax((double[])c.Results, ref YRange.Lo, ref YRange.Hi));
                 }
 
-                // Draw at most one "heat map"
                 var heatMap = Calcs.FirstOrDefault(c => (c as Calculator3D)?.EquationMode == false);
                 if (heatMap != null) {
                     MaybeChooseAutoZRange(ZRange, (double[,])heatMap.Results);
@@ -151,7 +148,6 @@ namespace LesGraphingCalc
             DrawLinesSafe(g, pen, points);
         }
 
-        // Same as g.DrawLines(), except it ignores NaN/inf instead of throwing
         private void DrawLinesSafe(Graphics g, Pen pen, PointF[] points)
         {
             int x, start = 0;
@@ -165,8 +161,7 @@ namespace LesGraphingCalc
             if (x > start)
                 DrawLinesWorkaround(g, pen, points.Slice(start).ToArray());
         }
-        // Same as g.DrawLines(), except it works and doesn't throw when given a 
-        // single point or large values of Y
+
         private void DrawLinesWorkaround(Graphics g, Pen pen, PointF[] points)
         {
             for (int i = 0; i < points.Length; i++) {
@@ -179,7 +174,7 @@ namespace LesGraphingCalc
                 g.DrawLines(pen, points);
         }
 
-        static readonly Color[] ColorBands = new Color[] { Color.Orange, Color.Red, Color.Fuchsia, Color.RoyalBlue, Color.White, Color.Goldenrod, Color.Lime, Color.Blue, Color.Black };
+        static readonly Color[] ColorBands = new Color[] { Color.Black,Color.White  };
         static Color[] HeatColors = null;
 
         void RenderXYFunc(double[,] data, bool booleanMode, Color trueColor)
@@ -395,7 +390,7 @@ namespace LesGraphingCalc
             if (range == null)
                 return new GraphRange(-1, 1, numPixels, Pens.MidnightBlue, null) { AutoRange = true };
             if (range.Calls(CodeSymbols.Colon, 2) && range[0].IsId && string.Compare(range[0].Name.Name, rangeName, true) == 0)
-                range = range[1]; // ignore axis prefix like "x:" or "y:"
+                range = range[1]; 
             
             if (range.Calls(CodeSymbols.Sub, 2) || range.Calls(CodeSymbols.DotDot, 2))
             {

@@ -1,10 +1,3 @@
-// Generated from Calculators.ecs by LeMP custom tool. LeMP version: 2.5.2.0
-// Note: you can give command-line arguments to the tool via 'Custom Tool Namespace':
-// --no-out-header       Suppress this message
-// --verbose             Allow verbose messages (shown by VS as 'warnings')
-// --timeout=X           Abort processing thread after X seconds (default: 10)
-// --macros=FileName.dll Load macros from FileName.dll, path relative to this file 
-// Use #importMacros to use macros in a given namespace, e.g. #importMacros(Loyc.LLPG);
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,9 +32,6 @@ namespace LesGraphingCalc
 			return new CalcRange(mid - halfSpan, mid + halfSpan, PxCount);
 		}
 	}
-
-	// "alt class" generates an entire class hierarchy with base class CalculatorCore and 
-	// read-only fields. Each "alternative" (derived class) is marked with the word "alt".
 	abstract class CalculatorCore {
 		static readonly Symbol sy_x = (Symbol) "x", sy_y = (Symbol) "y";
 		// Base class constructor and fields
@@ -79,8 +69,7 @@ namespace LesGraphingCalc
 	
 		public static CalculatorCore New(LNode expr, Dictionary<Symbol, LNode> vars, CalcRange xRange, CalcRange yRange)
 		{
-			// Find out if the expression uses the variable "y" (or is an equation with '=' or '==')
-			// As an (unnecessary) side effect, this throws if an unreferenced var is used
+
 			bool isEquation = expr.Calls(CodeSymbols.Assign, 2) || expr.Calls(CodeSymbols.Eq, 2), usesY = false;
 			if (!isEquation) {
 				LNode zero = LNode.Literal((double) 0);
@@ -94,7 +83,7 @@ namespace LesGraphingCalc
 				return new Calculator2D(expr, vars, xRange);
 		}
 	
-		// Parse the list of variables provided in the GUI
+		// GUI
 		public static Dictionary<Symbol, LNode> ParseVarList(IEnumerable<LNode> varList)
 		{
 			var vars = new Dictionary<Symbol, LNode>();
@@ -105,8 +94,7 @@ namespace LesGraphingCalc
 						if (!@var.IsId)
 							throw new ArgumentException("Left-hand side of '=' must be a variable name: {0}".Localized(@var));
 					
-						// For efficiency, try to evaluate the expression in advance
-						try { expr = LNode.Literal(Eval(expr, vars)); } catch { }	// it won't work if expression uses X or Y
+						try { expr = LNode.Literal(Eval(expr, vars)); } catch { }	
 						vars.Add(@var.Name, expr);
 					} else
 						throw new ArgumentException("Expected assignment expression: {0}".Localized(assignment));
@@ -121,92 +109,92 @@ namespace LesGraphingCalc
 			lookup = name => Eval(vars[name], lookup);
 			return Eval(expr, lookup);
 		}
-	
-		// Evaluates an expression
-		public static number Eval(LNode expr, Func<Symbol, number> lookup)
-		{
-			if (expr.IsLiteral) {
-				if (expr.Value is number)
-					return (number) expr.Value;
-				else
-					return (number) Convert.ToDouble(expr.Value);
-			}
-			if (expr.IsId)
-				return lookup(expr.Name);
-		
-			// expr must be a function or operator
-			if (expr.ArgCount == 2) {
-				{
-					LNode a, b, hi, lo, tmp_10, tmp_11 = null;
-					if (expr.Calls(CodeSymbols.Add, 2) && (a = expr.Args[0]) != null && (b = expr.Args[1]) != null) return Eval(a, lookup) + Eval(b, lookup);
-					else if (expr.Calls(CodeSymbols.Mul, 2) && (a = expr.Args[0]) != null && (b = expr.Args[1]) != null) return Eval(a, lookup) * Eval(b, lookup);
-					else if (expr.Calls(CodeSymbols.Sub, 2) && (a = expr.Args[0]) != null && (b = expr.Args[1]) != null) return Eval(a, lookup) - Eval(b, lookup);
-					else if (expr.Calls(CodeSymbols.Div, 2) && (a = expr.Args[0]) != null && (b = expr.Args[1]) != null) return Eval(a, lookup) / Eval(b, lookup);
-					else if (expr.Calls(CodeSymbols.Mod, 2) && (a = expr.Args[0]) != null && (b = expr.Args[1]) != null) return Eval(a, lookup) % Eval(b, lookup);
-					else if (expr.Calls(CodeSymbols.Exp, 2) && (a = expr.Args[0]) != null && (b = expr.Args[1]) != null) return (number) Math.Pow(Eval(a, lookup), Eval(b, lookup));
-					else if (expr.Calls(CodeSymbols.Shr, 2) && (a = expr.Args[0]) != null && (b = expr.Args[1]) != null) return (number) G.ShiftRight(Eval(a, lookup), (int) Eval(b, lookup));
-					else if (expr.Calls(CodeSymbols.Shl, 2) && (a = expr.Args[0]) != null && (b = expr.Args[1]) != null) return (number) G.ShiftLeft(Eval(a, lookup), (int) Eval(b, lookup));
-					else if (expr.Calls(CodeSymbols.GT, 2) && (a = expr.Args[0]) != null && (b = expr.Args[1]) != null) return Eval(a, lookup) > Eval(b, lookup) ? (number) 1 : (number) 0;
-					else if (expr.Calls(CodeSymbols.LT, 2) && (a = expr.Args[0]) != null && (b = expr.Args[1]) != null) return Eval(a, lookup) < Eval(b, lookup) ? (number) 1 : (number) 0;
-					else if (expr.Calls(CodeSymbols.GE, 2) && (a = expr.Args[0]) != null && (b = expr.Args[1]) != null) return Eval(a, lookup) >= Eval(b, lookup) ? (number) 1 : (number) 0;
-					else if (expr.Calls(CodeSymbols.LE, 2) && (a = expr.Args[0]) != null && (b = expr.Args[1]) != null) return Eval(a, lookup) <= Eval(b, lookup) ? (number) 1 : (number) 0;
-					else if (expr.Calls(CodeSymbols.Eq, 2) && (a = expr.Args[0]) != null && (b = expr.Args[1]) != null) return Eval(a, lookup) == Eval(b, lookup) ? (number) 1 : (number) 0;
-					else if (expr.Calls(CodeSymbols.Neq, 2) && (a = expr.Args[0]) != null && (b = expr.Args[1]) != null) return Eval(a, lookup) != Eval(b, lookup) ? (number) 1 : (number) 0;
-					else if (expr.Calls(CodeSymbols.AndBits, 2) && (a = expr.Args[0]) != null && (b = expr.Args[1]) != null) return (number) ((long) Eval(a, lookup) & (long) Eval(b, lookup));
-					else if (expr.Calls(CodeSymbols.OrBits, 2) && (a = expr.Args[0]) != null && (b = expr.Args[1]) != null) return (number) ((long) Eval(a, lookup) | (long) Eval(b, lookup));
-					else if (expr.Calls(CodeSymbols.NullCoalesce, 2) && (a = expr.Args[0]) != null && (b = expr.Args[1]) != null) {
-						var a2 = Eval(a, lookup); return double.IsNaN(a2) | double.IsInfinity(a2) ? Eval(b, lookup) : a2;
-					} else if (expr.Calls(CodeSymbols.And, 2) && (a = expr.Args[0]) != null && (b = expr.Args[1]) != null || expr.Calls((Symbol) "'and", 2) && (a = expr.Args[0]) != null && (b = expr.Args[1]) != null) return Eval(a, lookup) != (number) 0 ? Eval(b, lookup) : (number) 0;
-					else if (expr.Calls(CodeSymbols.Or, 2) && (a = expr.Args[0]) != null && (b = expr.Args[1]) != null || expr.Calls((Symbol) "'or", 2) && (a = expr.Args[0]) != null && (b = expr.Args[1]) != null) return Eval(a, lookup) == (number) 0 ? Eval(b, lookup) : (number) 1;
-					else if (expr.Calls((Symbol) "'xor", 2) && (a = expr.Args[0]) != null && (b = expr.Args[1]) != null) return (Eval(a, lookup) != 0) != (Eval(b, lookup) != 0) ? (number) 1 : (number) 0;
-					else if (expr.Calls((Symbol) "xor", 2) && (a = expr.Args[0]) != null && (b = expr.Args[1]) != null) return (number) ((long) Eval(a, lookup) ^ (long) Eval(b, lookup));
-					else if (expr.Calls((Symbol) "min", 2) && (a = expr.Args[0]) != null && (b = expr.Args[1]) != null) return Math.Min(Eval(a, lookup), Eval(b, lookup));
-					else if (expr.Calls((Symbol) "max", 2) && (a = expr.Args[0]) != null && (b = expr.Args[1]) != null) return Math.Max(Eval(a, lookup), Eval(b, lookup));
-					else if (expr.Calls((Symbol) "mod", 2) && (a = expr.Args[0]) != null && (b = expr.Args[1]) != null || expr.Calls((Symbol) "'MOD", 2) && (a = expr.Args[0]) != null && (b = expr.Args[1]) != null) return Mod(Eval(a, lookup), Eval(b, lookup));
-					else if (expr.Calls((Symbol) "atan", 2) && (a = expr.Args[0]) != null && (b = expr.Args[1]) != null) return Math.Atan2(Eval(a, lookup), Eval(b, lookup));
-					else if (expr.Calls((Symbol) "log", 2) && (a = expr.Args[0]) != null && (b = expr.Args[1]) != null) return Math.Log(Eval(a, lookup), Eval(b, lookup));
-					else if (expr.Calls((Symbol) "'in", 2) && (a = expr.Args[0]) != null && (tmp_10 = expr.Args[1]) != null && tmp_10.Calls(CodeSymbols.Tuple, 2) && (lo = tmp_10.Args[0]) != null && (hi = tmp_10.Args[1]) != null) return G.IsInRange(Eval(a, lookup), Eval(lo, lookup), Eval(hi, lookup)) ? (number) 1 : (number) 0;
-					else if (expr.Calls((Symbol) "'clamp", 2) && (a = expr.Args[0]) != null && (tmp_11 = expr.Args[1]) != null && tmp_11.Calls(CodeSymbols.Tuple, 2) && (lo = tmp_11.Args[0]) != null && (hi = tmp_11.Args[1]) != null || expr.Calls((Symbol) "clamp", 3) && (a = expr.Args[0]) != null && (lo = expr.Args[1]) != null && (hi = expr.Args[2]) != null) return G.PutInRange(Eval(a, lookup), Eval(lo, lookup), Eval(hi, lookup));
-					else if (expr.Calls((Symbol) "'P", 2) && (a = expr.Args[0]) != null && (b = expr.Args[1]) != null || expr.Calls((Symbol) "P", 2) && (a = expr.Args[0]) != null && (b = expr.Args[1]) != null) return P((int) Math.Round(Eval(a, lookup)), (int) Math.Round(Eval(b, lookup)));
-					else if (expr.Calls((Symbol) "'C", 2) && (a = expr.Args[0]) != null && (b = expr.Args[1]) != null || expr.Calls((Symbol) "C", 2) && (a = expr.Args[0]) != null && (b = expr.Args[1]) != null) return C((ulong) Math.Round(Eval(a, lookup)), (ulong) Math.Round(Eval(b, lookup)));
-				}
-			}
-			{
-				LNode a, b, c, tmp_12;
-				if (expr.Calls(CodeSymbols.Sub, 1) && (a = expr.Args[0]) != null) return -Eval(a, lookup);
-				else if (expr.Calls(CodeSymbols.Add, 1) && (a = expr.Args[0]) != null) return Math.Abs(Eval(a, lookup));
-				else if (expr.Calls(CodeSymbols.Not, 1) && (a = expr.Args[0]) != null) return Eval(a, lookup) == 0 ? (number) 1 : (number) 0;
-				else if (expr.Calls(CodeSymbols.NotBits, 1) && (a = expr.Args[0]) != null) return (number) ~(long) Eval(a, lookup);
-				else if (expr.Calls(CodeSymbols.QuestionMark, 2) && (c = expr.Args[0]) != null && (tmp_12 = expr.Args[1]) != null && tmp_12.Calls(CodeSymbols.Colon, 2) && (a = tmp_12.Args[0]) != null && (b = tmp_12.Args[1]) != null)
-					return Eval(c, lookup) != (number) 0 ? Eval(a, lookup) : Eval(b, lookup);
-				else if (expr.Calls((Symbol) "square", 1) && (a = expr.Args[0]) != null) {
-					var n = Eval(a, lookup); return n * n;
-				} else if (expr.Calls((Symbol) "sqrt", 1) && (a = expr.Args[0]) != null) return Math.Sqrt(Eval(a, lookup));
-				else if (expr.Calls((Symbol) "sin", 1) && (a = expr.Args[0]) != null) return Math.Sin(Eval(a, lookup));
-				else if (expr.Calls((Symbol) "cos", 1) && (a = expr.Args[0]) != null) return Math.Cos(Eval(a, lookup));
-				else if (expr.Calls((Symbol) "tan", 1) && (a = expr.Args[0]) != null) return Math.Tan(Eval(a, lookup));
-				else if (expr.Calls((Symbol) "asin", 1) && (a = expr.Args[0]) != null) return Math.Asin(Eval(a, lookup));
-				else if (expr.Calls((Symbol) "acos", 1) && (a = expr.Args[0]) != null) return Math.Acos(Eval(a, lookup));
-				else if (expr.Calls((Symbol) "atan", 1) && (a = expr.Args[0]) != null) return Math.Atan(Eval(a, lookup));
-				else if (expr.Calls((Symbol) "sec", 1) && (a = expr.Args[0]) != null) return 1 / Math.Cos(Eval(a, lookup));
-				else if (expr.Calls((Symbol) "csc", 1) && (a = expr.Args[0]) != null) return 1 / Math.Sin(Eval(a, lookup));
-				else if (expr.Calls((Symbol) "cot", 1) && (a = expr.Args[0]) != null) return 1 / Math.Tan(Eval(a, lookup));
-				else if (expr.Calls((Symbol) "exp", 1) && (a = expr.Args[0]) != null) return Math.Exp(Eval(a, lookup));
-				else if (expr.Calls((Symbol) "ln", 1) && (a = expr.Args[0]) != null) return Math.Log(Eval(a, lookup));
-				else if (expr.Calls((Symbol) "log", 1) && (a = expr.Args[0]) != null) return Math.Log10(Eval(a, lookup));
-				else if (expr.Calls((Symbol) "ceil", 1) && (a = expr.Args[0]) != null) return Math.Ceiling(Eval(a, lookup));
-				else if (expr.Calls((Symbol) "floor", 1) && (a = expr.Args[0]) != null) return Math.Floor(Eval(a, lookup));
-				else if (expr.Calls((Symbol) "sign", 1) && (a = expr.Args[0]) != null) return Math.Sign(Eval(a, lookup));
-				else if (expr.Calls((Symbol) "abs", 1) && (a = expr.Args[0]) != null) return Math.Abs(Eval(a, lookup));
-				else if (expr.Calls((Symbol) "rnd", 0)) return (number) _r.NextDouble();
-				else if (expr.Calls((Symbol) "rnd", 1) && (a = expr.Args[0]) != null) return (number) _r.Next((int) Eval(a, lookup));
-				else if (expr.Calls((Symbol) "rnd", 2) && (a = expr.Args[0]) != null && (b = expr.Args[1]) != null) return (number) _r.Next((int) Eval(a, lookup), (int) Eval(b, lookup));
-				else if (expr.Calls((Symbol) "fact", 1) && (a = expr.Args[0]) != null) return Factorial(Eval(a, lookup));
-			}
-			throw new ArgumentException("Expression not understood: {0}".Localized(expr));
-		}
-	
-		static double Mod(double x, double y)
+
+        // Evaluates an expression
+        public static number Eval(LNode expr, Func<Symbol, number> lookup)
+        {
+            // Проверка на литерал и идентификатор
+            if (expr.IsLiteral) return expr.Value is number ? (number)expr.Value : (number)Convert.ToDouble(expr.Value);
+            if (expr.IsId) return lookup(expr.Name);
+
+            // Бинарные операции
+            if (expr.ArgCount == 2)
+            {
+                var a = expr.Args[0];
+                var b = expr.Args[1];
+                return expr.Calls(CodeSymbols.Add) ? Eval(a, lookup) + Eval(b, lookup) :
+                       expr.Calls(CodeSymbols.Mul) ? Eval(a, lookup) * Eval(b, lookup) :
+                       expr.Calls(CodeSymbols.Sub) ? Eval(a, lookup) - Eval(b, lookup) :
+                       expr.Calls(CodeSymbols.Div) ? Eval(a, lookup) / Eval(b, lookup) :
+                       expr.Calls(CodeSymbols.Mod) ? Eval(a, lookup) % Eval(b, lookup) :
+                       expr.Calls(CodeSymbols.Exp) ? (number)Math.Pow(Eval(a, lookup), Eval(b, lookup)) :
+                       expr.Calls(CodeSymbols.GT) ? Eval(a, lookup) > Eval(b, lookup) ? 1 : 0 :
+                       expr.Calls(CodeSymbols.LT) ? Eval(a, lookup) < Eval(b, lookup) ? 1 : 0 :
+                       expr.Calls(CodeSymbols.Eq) ? Eval(a, lookup) == Eval(b, lookup) ? 1 : 0 :
+                       expr.Calls(CodeSymbols.Neq) ? Eval(a, lookup) != Eval(b, lookup) ? 1 : 0 :
+                       expr.Calls(CodeSymbols.And) ? Eval(a, lookup) != 0 && Eval(b, lookup) != 0 ? 1 : 0 :
+                       expr.Calls(CodeSymbols.Or) ? Eval(a, lookup) != 0 || Eval(b, lookup) != 0 ? 1 : 0 :
+                       throw new ArgumentException($"Unsupported binary expression: {expr}");
+            }
+
+            // Унарные операции
+            if (expr.ArgCount == 1)
+            {
+                var a = expr.Args[0];
+                return expr.Calls(CodeSymbols.Sub) ? -Eval(a, lookup) :
+                       expr.Calls(CodeSymbols.Not) ? Eval(a, lookup) == 0 ? 1 : 0 :
+                       expr.Calls((Symbol)"square") ? Math.Pow(Eval(a, lookup), 2) :
+                       expr.Calls((Symbol)"sqrt") ? Math.Sqrt(Eval(a, lookup)) :
+                       expr.Calls((Symbol)"sin") ? Math.Sin(Eval(a, lookup)) :
+                       expr.Calls((Symbol)"cos") ? Math.Cos(Eval(a, lookup)) :
+                       expr.Calls((Symbol)"tan") ? Math.Tan(Eval(a, lookup)) :
+                       expr.Calls((Symbol)"acos") ? Math.Acos(Eval(a, lookup)) :
+					   expr.Calls((Symbol)"atan") ? Math.Atan(Eval(a, lookup)) :
+					   expr.Calls((Symbol)"exp") ? Math.Exp(Eval(a, lookup)) :
+					   expr.Calls((Symbol)"ln") ? Math.Log(Eval(a, lookup)) :
+					   expr.Calls((Symbol)"log") ? Math.Log10(Eval(a, lookup)) :
+					   expr.Calls((Symbol)"ceil") ? Math.Ceiling(Eval(a, lookup)) :
+					   expr.Calls((Symbol)"floor") ? Math.Floor(Eval(a, lookup)) :
+					   expr.Calls((Symbol)"sign") ? Math.Sign(Eval(a, lookup)) :
+					   expr.Calls((Symbol)"abs") ? Math.Abs(Eval(a, lookup)) :
+                       throw new ArgumentException($"Unsupported unary expression: {expr}");
+            }
+            // Интегрирование методом трапеций
+            if (expr.Calls((Symbol)"integrate", 4))
+            {
+                var funcExpr = expr.Args[0];      // Функция для интегрирования
+                var a = Eval(expr.Args[1], lookup); // Нижний предел интегрирования
+                var b = Eval(expr.Args[2], lookup); // Верхний предел интегрирования
+                var n = (int)Eval(expr.Args[3], lookup); // Число интервалов
+
+                number h = (b - a) / n;
+                number sum = 0.0;
+
+                for (int i = 0; i <= n; i++)
+                {
+                    number x = a + i * h;
+
+                    Func<Symbol, number> localLookup = symbol => symbol.Name == "x" ? x : lookup(symbol);
+
+                    var factor = (i == 0 || i == n) ? 0.5 : 1.0;
+                    sum += factor * Eval(funcExpr, localLookup);
+                }
+
+                return sum * h;
+            }
+
+            // Тернарный оператор
+            if (expr.Calls(CodeSymbols.QuestionMark) && expr.ArgCount == 2 && expr.Args[1].Calls(CodeSymbols.Colon, 2))
+            {
+                var cond = Eval(expr.Args[0], lookup);
+                return cond != 0 ? Eval(expr.Args[1].Args[0], lookup) : Eval(expr.Args[1].Args[1], lookup);
+            }
+
+            throw new ArgumentException($"Expression not understood: {expr}");
+        }
+
+
+        static double Mod(double x, double y)
 		{
 			double m = x % y;
 			return m + (m < 0 ? y : 0);
@@ -228,7 +216,6 @@ namespace LesGraphingCalc
 		}
 		static Random _r = new Random();
 	}
-	// Derived class for 2D graphing calculator
 	class Calculator2D : CalculatorCore {
 		static readonly Symbol sy_x = (Symbol) "x";
 		public Calculator2D(LNode Expr, Dictionary<Symbol, LNode> Vars, CalcRange XRange)
@@ -264,7 +251,6 @@ namespace LesGraphingCalc
 		}
 	}
 
-	// Derived class for pseudo-3D and "equation" calculator
 	class Calculator3D : CalculatorCore {
 		static readonly Symbol sy_x = (Symbol) "x", sy_y = (Symbol) "y";
 		public Calculator3D(LNode Expr, Dictionary<Symbol, LNode> Vars, CalcRange XRange, CalcRange YRange)
@@ -331,9 +317,15 @@ namespace LesGraphingCalc
 			}
 		
 			Func<Symbol, number> lookup = null;
-			lookup = name => (name == sy_x ? x : name == sy_y ? y : Eval(Vars[name], lookup));
-		
-			for (int yi = 0; yi < results.GetLength(0); yi++, x = startx) {
+			try
+			{
+				lookup = name => (name == sy_x ? x : name == sy_y ? y : Eval(Vars[name], lookup));
+			}
+			catch {
+                throw new FormatException("The function must have sensitive case variables{ }");
+            }
+
+            for (int yi = 0; yi < results.GetLength(0); yi++, x = startx) {
 				for (int xi = 0; xi < results.GetLength(1); xi++) {
 					results[yi, xi] = Eval(expr, lookup);
 					x += XRange.StepSize;
